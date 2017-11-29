@@ -204,6 +204,7 @@ public class LockManageActivity extends MPermissionsActivity implements View.OnC
         sendDataBytes = null;
         switch (v.getId()) {
             case R.id.bt_open://开锁
+
                 sendDataBytes = new byte[]{0x05, 0x01, 0x06, SampleGattAttributes.password[0],SampleGattAttributes.password[1],SampleGattAttributes.password[2],SampleGattAttributes.password[3],SampleGattAttributes.password[4],SampleGattAttributes.password[5],   token[0], token[1], token[2], token[3], 0x00, 0x00, 0x00};
                 App.getInstance().getBluetoothLeService().writeCharacteristic(sendDataBytes);
 
