@@ -1,6 +1,8 @@
 package com.nokelock.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -8,6 +10,8 @@ import android.widget.TextView;
 
 import com.nokelock.bean.BleDevice;
 import com.nokelock.nokelockble.R;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.List;
 
@@ -19,17 +23,18 @@ import java.util.List;
  */
 
 public class DeviceAdapter extends BaseAdapter {
-
+    private static final String TAG = "DeviceAdapter";
     Context context;
     List<BleDevice> bleDeviceList;
-    public DeviceAdapter(Context context, List<BleDevice> bleDeviceList){
+
+    public DeviceAdapter(Context context, List<BleDevice> bleDeviceList) {
         this.context = context;
         this.bleDeviceList = bleDeviceList;
     }
 
     @Override
     public int getCount() {
-        return bleDeviceList.size()>5?5:bleDeviceList.size();
+        return bleDeviceList.size() > 5 ? 5 : bleDeviceList.size();
     }
 
     @Override
@@ -53,12 +58,21 @@ public class DeviceAdapter extends BaseAdapter {
         }
         BleDevice device = bleDeviceList.get(position);
         viewHolder.listRiss.setText("RISS：" + device.getRiss());
-        viewHolder.listAddress.setText("Name:" + device.getDevice().getName() + "\nMAC:" + device.getDevice().getAddress());
+        String name =  device.getName();
+        Log.i(TAG, "getView: " + name);
+        if (TextUtils.isEmpty(name)) {
+            name =   device.getDevice().getName() + "\nMAC:" + device.getDevice().getAddress();
+        }
+        viewHolder.listAddress.setText("Name:"+name);
+
+
         return convertView;
     }
+
     class ViewHolder {
         TextView listRiss;
         TextView listAddress;
+
         ViewHolder(View view) {
             listAddress = (TextView) view.findViewById(R.id.list_name);
             listRiss = (TextView) view.findViewById(R.id.list_riss);

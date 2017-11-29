@@ -1,6 +1,5 @@
 package com.nokelock.bean;
 
-import android.bluetooth.BluetoothDevice;
 
 import org.litepal.crud.DataSupport;
 
@@ -10,19 +9,19 @@ import java.util.Arrays;
  * 蓝牙设备
  * Created by sunshine on 2017/2/21.
  */
-public class BleDevice {
-    private BluetoothDevice device;
+public class BlueDevice extends DataSupport {
+    private long id;
+    private String device;//address
     private byte[] scanBytes;
     private int riss = 0;
     private String name;//名称
 
-    public BleDevice() {
+    public long getId() {
+        return id;
     }
 
-    public BleDevice(BluetoothDevice device, byte[] scanBytes, int riss) {
-        this.device = device;
-        this.scanBytes = scanBytes;
-        this.riss = riss;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -33,11 +32,11 @@ public class BleDevice {
         this.name = name;
     }
 
-    public BluetoothDevice getDevice() {
+    public String getDevice() {
         return device;
     }
 
-    public void setDevice(BluetoothDevice device) {
+    public void setDevice(String device) {
         this.device = device;
     }
 
@@ -59,8 +58,9 @@ public class BleDevice {
 
     @Override
     public String toString() {
-        return "BleDevice{" +
-                "device=" + device +
+        return "BlueDevice{" +
+                "id=" + id +
+                ", device='" + device + '\'' +
                 ", scanBytes=" + Arrays.toString(scanBytes) +
                 ", riss=" + riss +
                 ", name='" + name + '\'' +

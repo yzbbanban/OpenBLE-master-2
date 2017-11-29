@@ -1,4 +1,4 @@
-package com.nokelock.nokelockble;
+package com.nokelock.activity;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
@@ -12,21 +12,31 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Process;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nokelock.adapter.DeviceAdapter;
 import com.nokelock.bean.BleDevice;
+import com.nokelock.app.App;
+import com.nokelock.bean.BlueDevice;
+import com.nokelock.nokelockble.R;
 import com.nokelock.service.BluetoothLeService;
-import com.nokelock.utils.MPermissionsActivity;
+
 import com.nokelock.utils.ParseLeAdvData;
 import com.nokelock.utils.SampleGattAttributes;
 import com.nokelock.utils.SortComparator;
+import com.nokelock.utils.ToastUtil;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +45,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class MainActivity extends MPermissionsActivity {
-
+    private static final String TAG = "MainActivity";
     private TextView tvRefresh;
     private boolean isRefreshing = false;
 
@@ -46,6 +56,8 @@ public class MainActivity extends MPermissionsActivity {
     private DeviceAdapter adapter;
     private Comparator comp;
 
+    private List<BlueDevice> blueDevices = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +65,7 @@ public class MainActivity extends MPermissionsActivity {
         initBLE();
         initWidget();
     }
+
 
     @Override
     protected void onResume() {
@@ -62,14 +75,14 @@ public class MainActivity extends MPermissionsActivity {
             public void run() {
                 refreshDevice();
             }
-        },500);
+        }, 500);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
-        if (connection!=null){
+        if (connection != null) {
             unbindService(connection);
             connection = null;
         }
@@ -102,24 +115,26 @@ public class MainActivity extends MPermissionsActivity {
             if (bluetoothLeService.initBluetooth()) {
                 App.getInstance().setBluetoothLeService(bluetoothLeService);
                 BluetoothAdapter bluetoothAdapter = bluetoothLeService.getmBluetoothAdapter();
-                if (bluetoothAdapter!=null&&!bluetoothAdapter.isEnabled()){
+                if (bluetoothAdapter != null && !bluetoothAdapter.isEnabled()) {
                     Intent enableBT = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableBT, 1);
                 }
             }
         }
+
         @Override
         public void onServiceDisconnected(ComponentName name) {
             App.getInstance().setBluetoothLeService(null);
         }
     };
 
-    private void initWidget(){
+    private void initWidget() {
         comp = new SortComparator();
         ListView listView = (ListView) findViewById(R.id.recycler_view);
         tvRefresh = (TextView) findViewById(R.id.tv_refresh);
         Button btRefresh = (Button) findViewById(R.id.bt_refresh);
-        adapter = new DeviceAdapter(this,adapterList);
+
+        adapter = new DeviceAdapter(this, adapterList);
         listView.setAdapter(adapter);
         new Thread(new DeviceThread()).start();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -129,15 +144,15 @@ public class MainActivity extends MPermissionsActivity {
                 isRefreshing = false;
                 tvRefresh.setText("扫描结束");
                 BleDevice bluetoothDevice = adapterList.get(position);
-                String name = bluetoothDevice.getDevice().getName();
+                String name = bluetoothDevice.getName();
                 if (TextUtils.isEmpty(name)) {
-                    name = "null";
+                    name = bluetoothDevice.getDevice().getName();
                 }
                 String address = bluetoothDevice.getDevice().getAddress();
-                Intent intent = new Intent(MainActivity.this,LockManageActivity.class);
+                Intent intent = new Intent(MainActivity.this, LockManageActivity.class);
                 intent.putExtra("name", name);
                 intent.putExtra("address", address);
-               startActivity(intent);
+                startActivity(intent);
 
             }
         });
@@ -148,27 +163,87 @@ public class MainActivity extends MPermissionsActivity {
             }
         });
 
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                //Toast.makeText(MainActivity.this,"sss",Toast.LENGTH_SHORT).show();
+                showEditDialog(position);
+                return true;
+            }
+        });
+
     }
 
-    private void refreshDevice(){
-        requestPermission(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},101);
+    /**
+     * 显示编辑输入框
+     */
+    private void showEditDialog(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View v = getLayoutInflater().inflate(R.layout.user_dialog, null);
+        builder.setView(v);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        Button btnAdd = (Button) v.findViewById(R.id.btn_dialog_add);
+        Button btnCancel = (Button) v.findViewById(R.id.btn_dialog_cancel);
+        ImageButton ibtnClose = (ImageButton) v.findViewById(R.id.ibtn_dialog_close);
+        final EditText etDialogName = (EditText) v.findViewById(R.id.et_dialog_name);
+        //添加或更新
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                ToastUtil.showShortToast("Add");
+                String name = etDialogName.getText().toString().trim();
+                if ("".equals(name)) {
+                    ToastUtil.showShortToast("请输入");
+                } else {
+                    //向列表添加数据
+                    //更新数据
+                    BlueDevice blueDevice = DataSupport.where("device = ?",
+                            String.valueOf(adapterList.get(position).getDevice().getAddress())).findFirst(BlueDevice.class);
+                    if (blueDevice != null) {
+                        blueDevice.setName(name);
+                        blueDevice.update(blueDevice.getId());
+                    }
+                    refreshDevice();
+                    alertDialog.dismiss();
+                }
+
+            }
+        });
+        //取消
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+        ibtnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+    }
+
+    private void refreshDevice() {
+        requestPermission(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
     }
 
     @Override
     public void permissionSuccess(int requestCode) {
         super.permissionSuccess(requestCode);
-        if (requestCode==101){
+        if (requestCode == 101) {
             startScanDevice();
         }
     }
 
     private void startScanDevice() {
-        if (isRefreshing)return;
+        if (isRefreshing) return;
         isRefreshing = true;
         BluetoothLeService bluetoothLeService = App.getInstance().getBluetoothLeService();
-        if (bluetoothLeService!=null){
+        if (bluetoothLeService != null) {
             final BluetoothAdapter bluetoothAdapter = bluetoothLeService.getmBluetoothAdapter();
-            if (bluetoothAdapter==null){
+            if (bluetoothAdapter == null) {
                 isRefreshing = false;
                 return;
             }
@@ -176,7 +251,7 @@ public class MainActivity extends MPermissionsActivity {
             bluetoothDeviceList.clear();
             adapterList.clear();
             bleDeviceList.clear();
-            bluetoothAdapter.startLeScan(new UUID[]{SampleGattAttributes.bltServerUUID},leScanCallback);
+            bluetoothAdapter.startLeScan(new UUID[]{SampleGattAttributes.bltServerUUID}, leScanCallback);
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -184,9 +259,9 @@ public class MainActivity extends MPermissionsActivity {
                     isRefreshing = false;
                     bluetoothAdapter.stopLeScan(leScanCallback);
                 }
-            },5000);
+            }, 5000);
 
-        }else {
+        } else {
             isRefreshing = false;
         }
     }
@@ -215,13 +290,39 @@ public class MainActivity extends MPermissionsActivity {
         return false;
     }
 
-    private Handler handler  = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
-                case 0://更新设备
+            switch (msg.what) {
+                case 0://更新设备 保存到数据库
                     Collections.sort(adapterList, comp);
-                    if (adapter!=null){
+                    for (int i = 0; i < adapterList.size(); i++) {
+                        BlueDevice device = new BlueDevice();
+                        device.setDevice(String.valueOf(adapterList.get(i).getDevice().getAddress()));
+                        device.setRiss(adapterList.get(i).getRiss());
+                        device.setScanBytes(adapterList.get(i).getScanBytes());
+                        device.setName(String.valueOf(adapterList.get(i).getDevice().getName()));
+
+                        BlueDevice blueDevice = DataSupport.where("device = ?",
+                                String.valueOf(adapterList.get(i).getDevice().getAddress())).findFirst(BlueDevice.class);
+                        if (blueDevice != null) {
+                            device.setName(blueDevice.getName());
+                            device.update(blueDevice.getId());
+                            adapterList.get(i).setName(blueDevice.getName());
+                        } else {
+                            device.save();
+//                            adapterList.get(i).setName(
+//                                    "Name:" +device.getDevice()
+//                                            + "\nMAC:" + device.getName()
+//                            );
+                        }
+                    }
+//                    Log.i(TAG, "initWidget: "+adapterList);
+
+//                    List<BlueDevice> blueDevices = DataSupport.findAll(BlueDevice.class);
+//                    Log.i(TAG, "size: " + blueDevices.size() + "\n data: " + blueDevices);
+
+                    if (adapter != null) {
                         adapter.notifyDataSetChanged();
                     }
                     break;
@@ -229,13 +330,13 @@ public class MainActivity extends MPermissionsActivity {
         }
     };
 
-    class DeviceThread implements Runnable{
+    class DeviceThread implements Runnable {
         @Override
         public void run() {
             while (true) {
                 if (bleDeviceList.size() > 0) {
                     BleDevice bleDevice = bleDeviceList.get(0);
-                    if (null!=bleDevice&&parseAdvData(bleDevice.getRiss(), bleDevice.getScanBytes())) {
+                    if (null != bleDevice && parseAdvData(bleDevice.getRiss(), bleDevice.getScanBytes())) {
                         adapterList.add(bleDevice);
                         handler.sendEmptyMessage(0);
                     }

@@ -1,4 +1,4 @@
-package com.nokelock.utils;
+package com.nokelock.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;

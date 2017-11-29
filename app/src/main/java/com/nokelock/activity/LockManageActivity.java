@@ -1,4 +1,4 @@
-package com.nokelock.nokelockble;
+package com.nokelock.activity;
 
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -11,13 +11,13 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.nokelock.app.App;
+import com.nokelock.nokelockble.R;
 import com.nokelock.service.BluetoothLeService;
 import com.nokelock.utils.HexUtils;
-import com.nokelock.utils.MPermissionsActivity;
 import com.nokelock.utils.SampleGattAttributes;
 
 public class LockManageActivity extends MPermissionsActivity implements View.OnClickListener {
@@ -32,6 +32,7 @@ public class LockManageActivity extends MPermissionsActivity implements View.OnC
     private TextView deviceCz;
     private TextView deviceStatus;
     private TextView openCount;
+    private ProgressBar pb;
     byte[] gettoken = {0x06, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     byte[] sendDataBytes = null;
     private ProgressDialog progressDialog;
@@ -59,6 +60,8 @@ public class LockManageActivity extends MPermissionsActivity implements View.OnC
      * 初始化控件
      */
     private void initWidget() {
+
+
         deviceName = (TextView) findViewById(R.id.tv_name);
         deviceMac = (TextView) findViewById(R.id.tv_address);
         deviceBattery = (TextView) findViewById(R.id.tv_battery);
@@ -66,16 +69,17 @@ public class LockManageActivity extends MPermissionsActivity implements View.OnC
         deviceCz = (TextView) findViewById(R.id.tv_cz);
         deviceStatus = (TextView) findViewById(R.id.tv_status);
         openCount = (TextView) findViewById(R.id.open_count);
+        pb = (ProgressBar) findViewById(R.id.pb);
         findViewById(R.id.bt_open).setOnClickListener(this);
-        findViewById(R.id.bt_close).setOnClickListener(this);
-        findViewById(R.id.bt_status).setOnClickListener(this);
-        findViewById(R.id.bt_update_password).setOnClickListener(this);
-        ((CheckBox) findViewById(R.id.bt_auto)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                isAuto = isChecked;
-            }
-        });
+//        findViewById(R.id.bt_close).setOnClickListener(this);
+//        findViewById(R.id.bt_status).setOnClickListener(this);
+//        findViewById(R.id.bt_update_password).setOnClickListener(this);
+//        ((CheckBox) findViewById(R.id.bt_auto)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                isAuto = isChecked;
+//            }
+//        });
         String name = getIntent().getStringExtra("name");
         if (!TextUtils.isEmpty(name)) {
             deviceName.setText("Name：" + name);
@@ -87,6 +91,7 @@ public class LockManageActivity extends MPermissionsActivity implements View.OnC
             App.getInstance().getBluetoothLeService().connect(address);
         }
 
+        getDeviceStatus();
     }
 
     /**
@@ -123,6 +128,13 @@ public class LockManageActivity extends MPermissionsActivity implements View.OnC
         }
     };
 
+    //获取锁状态
+    private void getDeviceStatus(){
+        sendDataBytes = new byte[]{0x05, 0x0E, 0x01, 0X01, token[0], token[1], token[2], token[3], 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+        App.getInstance().getBluetoothLeService().writeCharacteristic(sendDataBytes);
+
+    }
+
     /**
      * 解析锁反馈的指令
      *
@@ -155,7 +167,8 @@ public class LockManageActivity extends MPermissionsActivity implements View.OnC
                 deviceCz.setText("获取电量失败");
             } else {
                 String battery = decryptString.substring(6, 8);
-                deviceBattery.setText("当前电量：" + Integer.parseInt(battery, 16));
+                pb.setProgress(Integer.parseInt(battery, 16));
+                deviceBattery.setText("当前电量：" + Integer.parseInt(battery, 16)+"%");
             }
         } else if (decryptString.startsWith("0502")) {//开锁
             if (decryptString.startsWith("05020101")) {
@@ -207,22 +220,20 @@ public class LockManageActivity extends MPermissionsActivity implements View.OnC
 
                 sendDataBytes = new byte[]{0x05, 0x01, 0x06, SampleGattAttributes.password[0],SampleGattAttributes.password[1],SampleGattAttributes.password[2],SampleGattAttributes.password[3],SampleGattAttributes.password[4],SampleGattAttributes.password[5],   token[0], token[1], token[2], token[3], 0x00, 0x00, 0x00};
                 App.getInstance().getBluetoothLeService().writeCharacteristic(sendDataBytes);
-
+                getDeviceStatus();
                 break;
-            case R.id.bt_status://获取锁状态
-                sendDataBytes = new byte[]{0x05, 0x0E, 0x01, 0X01, token[0], token[1], token[2], token[3], 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-                App.getInstance().getBluetoothLeService().writeCharacteristic(sendDataBytes);
-
-                break;
-            case R.id.bt_close://复位
-                sendDataBytes = new byte[]{0x05, 0x0c, 0x01, 0x01, token[0], token[1], token[2], token[3], 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-                App.getInstance().getBluetoothLeService().writeCharacteristic(sendDataBytes);
-
-                break;
-            case R.id.bt_update_password://修改密码
-                App.getInstance().getBluetoothLeService().writeCharacteristic(new byte[]{0x05, 0x03, 0x06,SampleGattAttributes.password[0],SampleGattAttributes.password[1],SampleGattAttributes.password[2],SampleGattAttributes.password[3],SampleGattAttributes.password[4],SampleGattAttributes.password[5],  token[0], token[1], token[2], token[3], 0x00, 0x00, 0x00});
-
-                break;
+//            case R.id.bt_status://获取锁状态
+//                getDeviceStatus();
+//                break;
+//            case R.id.bt_close://复位
+//                sendDataBytes = new byte[]{0x05, 0x0c, 0x01, 0x01, token[0], token[1], token[2], token[3], 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+//                App.getInstance().getBluetoothLeService().writeCharacteristic(sendDataBytes);
+//
+//                break;
+//            case R.id.bt_update_password://修改密码
+//                App.getInstance().getBluetoothLeService().writeCharacteristic(new byte[]{0x05, 0x03, 0x06,SampleGattAttributes.password[0],SampleGattAttributes.password[1],SampleGattAttributes.password[2],SampleGattAttributes.password[3],SampleGattAttributes.password[4],SampleGattAttributes.password[5],  token[0], token[1], token[2], token[3], 0x00, 0x00, 0x00});
+//
+//                break;
         }
     }
 

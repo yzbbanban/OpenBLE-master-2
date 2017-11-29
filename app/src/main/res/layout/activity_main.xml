@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark">
+        android:background="@color/colorBlack">
 
         <TextView
             android:id="@+id/tv_refresh"
@@ -16,7 +16,7 @@
             android:layout_centerInParent="true"
             android:padding="10dp"
             android:text="正在刷新..."
-            android:textColor="@android:color/white"
+            android:textColor="@color/colorWhite"
             android:textSize="20sp" />
 
         <Button
@@ -31,6 +31,6 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@android:color/black"
+        android:divider="@color/colorBlack"
         android:dividerHeight="1px" />
 </LinearLayout>

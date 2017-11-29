@@ -1,8 +1,9 @@
-package com.nokelock.nokelockble;
+package com.nokelock.app;
 
-import android.app.Application;
 
 import com.nokelock.service.BluetoothLeService;
+
+import org.litepal.LitePalApplication;
 
 /**
  * 作者: Sunshine
@@ -11,7 +12,7 @@ import com.nokelock.service.BluetoothLeService;
  * 描述:
  */
 
-public class App extends Application {
+public class App extends LitePalApplication {
 
     private static App app;
     private BluetoothLeService bluetoothLeService;
