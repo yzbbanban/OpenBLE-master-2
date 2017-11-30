@@ -226,6 +226,9 @@ public class MainActivity extends MPermissionsActivity {
     }
 
     private void refreshDevice() {
+        adapterList.clear();
+        bleDeviceList.clear();
+        adapter.notifyDataSetChanged();
         requestPermission(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
     }
 
