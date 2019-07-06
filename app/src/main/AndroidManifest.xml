@@ -13,11 +13,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name="com.nokelock.activity.WelcomeActivity"></activity>
         <activity
             android:name="com.nokelock.activity.MainActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <service
             android:name="com.nokelock.service.BluetoothLeService"
