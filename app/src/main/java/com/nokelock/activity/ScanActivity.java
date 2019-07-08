@@ -146,13 +146,20 @@ public class ScanActivity extends MPermissionsActivity {
 
                     //获取附近的蓝牙列表
 
-                    App.getInstance().getBluetoothLeService().getmBluetoothAdapter().stopLeScan(leScanCallback);
                     String address = "";
-                    for (BleDevice bd : adapterList) {
-                        if (msg.equals(bd.getName())) {
-                            address = bd.getDevice().getAddress();
+                    try {
+                        App.getInstance().getBluetoothLeService().getmBluetoothAdapter().stopLeScan(leScanCallback);
+                        ToastUtil.showLongToast("" + adapterList);
+                        for (BleDevice bd : adapterList) {
+                            if (msg.equals(bd.getName())) {
+                                address = bd.getDevice().getAddress();
+                            }
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        ToastUtil.showLongToast("" + e.getMessage());
                     }
+
 
                     //获取需要的数据
                     Intent intent = new Intent(ScanActivity.this, LockManageActivity.class);
@@ -257,7 +264,7 @@ public class ScanActivity extends MPermissionsActivity {
 //                        }
 //                    }
                     Log.i(TAG, "initWidget: " + adapterList);
-
+                    ToastUtil.showLongToast("" + adapterList);
 //                    List<BlueDevice> blueDevices = DataSupport.findAll(BlueDevice.class);
 //                    Log.i(TAG, "size: " + blueDevices.size() + "\n data: " + blueDevices);
 
