@@ -27,6 +27,20 @@
             android:text="刷新" />
     </RelativeLayout>
 
+    <TextView
+        android:padding="@dimen/x10"
+        android:gravity="center"
+        android:textSize="@dimen/x15"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="智能笼车开锁提货APP" />
+
+    <TextView
+        android:padding="@dimen/x6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="请选择锁：" />
+
     <ListView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"

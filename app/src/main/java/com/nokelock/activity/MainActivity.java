@@ -100,10 +100,10 @@ public class MainActivity extends MPermissionsActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                System.out.println("蓝牙已打开");
+                ToastUtil.showShortToast("蓝牙已打开");
                 refreshDevice();
             } else if (resultCode == RESULT_CANCELED) {
-                System.out.println("取消打开");
+                ToastUtil.showShortToast("取消打开");
             }
         }
     }

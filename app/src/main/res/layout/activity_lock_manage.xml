@@ -5,173 +5,295 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/largeLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-
-        <TextView
-            android:id="@+id/tv_name"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/x10"
-            android:padding="5dp"
-            android:text="Name:" />
+            android:background="@color/colorBlack">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/x1"
-            android:background="@color/colorBacGrey"></View>
+            <Button
+                android:id="@+id/bt_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:background="@null"
+                android:text="返回"
+                android:textColor="@color/colorWhite" />
 
-        <TextView
-            android:id="@+id/tv_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/x10"
-            android:padding="5dp"
-            android:text="Mac:" />
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:padding="10dp"
+                android:text="XXXX"
+                android:textColor="@color/colorWhite"
+                android:textSize="20sp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/x1"
-            android:background="@color/colorBacGrey"></View>
 
-        <TextView
-            android:id="@+id/tv_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/x10"
-            android:padding="5dp"
-            android:text="连接状态：" />
+        </RelativeLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/x1"
-            android:background="@color/colorBacGrey"></View>
+        <ImageView
+            android:layout_width="@dimen/x100"
+            android:layout_height="@dimen/x100"
+            android:layout_gravity="center"
+            android:src="@drawable/lo" />
 
-        <TextView
-            android:id="@+id/tv_version"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/x10"
-            android:padding="5dp"
-            android:text="当前版本：" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/x1"
-            android:background="@color/colorBacGrey"></View>
+    </LinearLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/largeLabel">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="手机号"
+                    android:textSize="@dimen/x15" />
+
+                <com.nokelock.ui.CleanEditText
+                    android:id="@+id/et_mobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="@dimen/x10"
+                    android:background="@drawable/shape_edit_login"
+                    android:hint="输入手机号"
+                    android:padding="@dimen/x2"
+                    android:textColorHint="@color/colorDarkGrey" />
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x1"
+                android:background="@color/colorBacGrey"></View>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="验证码"
+                    android:textSize="@dimen/x15" />
+
+                <com.nokelock.ui.CleanEditText
+                    android:id="@+id/et_code"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="@dimen/x10"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_edit_login"
+                    android:hint="输入验证码"
+                    android:padding="@dimen/x2"
+                    android:textColorHint="@color/colorDarkGrey" />
+
+                <Button
+                    android:id="@+id/bt_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/x10"
+                    android:background="@drawable/selector_btn"
+                    android:text="获取验证码"
+                    android:textColor="@color/colorWhite" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x1"
+                android:background="@color/colorBacGrey"></View>
+
 
             <TextView
-                android:id="@+id/tv_battery"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_status"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/x10"
                 android:padding="5dp"
-                android:text="当前电量：" />
+                android:text="连接状态：" />
 
-            <ProgressBar
-                android:id="@+id/pb"
-                style="?android:attr/progressBarStyleHorizontal"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x1"
+                android:background="@color/colorBacGrey"></View>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dip"
-                android:indeterminate="false"
-                android:padding="2dip"
-                android:progress="0"
-                android:progressDrawable="@drawable/progress_horizontal" />
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tv_battery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/x10"
+                    android:padding="5dp"
+                    android:text="当前电量：" />
+
+                <ProgressBar
+                    android:id="@+id/pb"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dip"
+                    android:indeterminate="false"
+                    android:padding="2dip"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/progress_horizontal" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x1"
+                android:background="@color/colorBacGrey"></View>
+
+            <Button
+                android:id="@+id/bt_open"
+                android:layout_width="@dimen/x200"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/x10"
+                android:layout_weight="1"
+                android:background="@drawable/selector_btn"
+                android:text="开锁"
+                android:textColor="@color/colorWhite" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x5"
+                android:text="注意：请在180秒内输入验证码" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x20"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="笼车名称："
+                    android:textSize="@dimen/x15" />
+
+                <TextView
+                    android:id="@+id/tv_category_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/x10"
+                    android:text="XXXX" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x20"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="路        单："
+                    android:textSize="@dimen/x15" />
+
+                <TextView
+                    android:id="@+id/tv_order_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/x10"
+                    android:text="XXXX" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x20"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="波  次  号："
+                    android:textSize="@dimen/x15" />
+
+                <TextView
+                    android:id="@+id/tv_flow_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/x10"
+                    android:text="XXXX" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x20"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="司机名称："
+                    android:textSize="@dimen/x15" />
+
+                <TextView
+                    android:id="@+id/tv_driver_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/x10"
+                    android:text="XXXX" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x20"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="物  流  箱："
+                    android:textSize="@dimen/x15" />
+
+                <TextView
+                    android:id="@+id/tv_box"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/x10"
+                    android:text="XXXX" />
+            </LinearLayout>
+
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/x1"
-            android:background="@color/colorBacGrey"></View>
 
-        <TextView
-            android:id="@+id/tv_cz"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/x10"
-            android:padding="5dp"
-            android:text="当前操作：" />
+    </ScrollView>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/x1"
-            android:background="@color/colorBacGrey"></View>
 
-        <TextView
-            android:id="@+id/open_count"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/x10"
-            android:padding="5dp"
-            android:text="开锁次数：0" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/x1"
-            android:background="@color/colorBacGrey"></View>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal"
-        android:padding="@dimen/x10">
-
-        <Button
-            android:id="@+id/bt_open"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/selector_btn"
-            android:text="开锁"
-            android:textColor="@color/colorWhite" />
-        <!--<CheckBox-->
-        <!--android:id="@+id/bt_auto"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:text="自动开锁" />-->
-    </LinearLayout>
-
-    <!--<Button-->
-    <!--android:id="@+id/bt_status"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginTop="20dp"-->
-    <!--android:text="获取锁状态" />-->
-    <!--<Button-->
-    <!--android:id="@+id/bt_close"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginTop="20dp"-->
-    <!--android:text="复位／关锁" />-->
-
-    <!--<Button-->
-    <!--android:id="@+id/bt_update_password"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginTop="20dp"-->
-    <!--android:text="修改密码" />-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/app_version"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_weight="1"-->
-    <!--android:gravity="bottom|center"-->
-    <!--android:padding="5dp"-->
-    <!--android:text="Version：" />-->
 </RelativeLayout>
