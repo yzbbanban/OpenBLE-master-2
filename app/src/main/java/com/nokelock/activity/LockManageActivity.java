@@ -415,12 +415,15 @@ public class LockManageActivity extends MPermissionsActivity implements View.OnC
         bt_back = (Button) findViewById(R.id.bt_back);
         tv_name = findViewById(R.id.tv_name);
         largeLabel = (LinearLayout) findViewById(R.id.largeLabel);
+
         et_mobile = (CleanEditText) findViewById(R.id.et_mobile);
         et_code = (CleanEditText) findViewById(R.id.et_code);
         bt_code = (Button) findViewById(R.id.bt_code);
+
         tv_status = findViewById(R.id.tv_status);
         tv_battery = findViewById(R.id.tv_battery);
         bt_open = (Button) findViewById(R.id.bt_open);
+
         tv_category_name = findViewById(R.id.tv_category_name);
         tv_order_num = findViewById(R.id.tv_order_num);
         tv_flow_num = findViewById(R.id.tv_flow_num);

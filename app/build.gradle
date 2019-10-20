@@ -28,6 +28,7 @@ dependencies {
     compile 'com.android.support:design:26+'
     compile 'org.litepal.android:core:1.3.2'
     implementation 'com.github.yuzhiqiang1993:zxing:2.1.4'
+    compile 'com.yanzhenjie:permission:1.0.3'
     //retrofit网络上传
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.squareup.okhttp3:okhttp:3.1.2'
